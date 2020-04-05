@@ -2,19 +2,10 @@ const express = require('express');
 const cors = require('cors');
 
 const uuidv4 = require('uuid/v4');
+const db = require('./db');
 
 const app = express();
 
-const db = [
-  { id: 1, author: 'John Doe', text: 'This company is worth every coin!' },
-  { id: 2, author: 'Amanda Doe', text: 'They really know how to make you happy.' },
-  { id: 3, author: 'John Doe', text: 'This company is worth every coin!' },
-  { id: 4, author: 'Amanda Doe', text: 'They really know how to make you happy.' },
-  { id: 5, author: 'John Doe', text: 'This company is worth every coin!' },
-  { id: 6, author: 'Amanda Doe', text: 'They really know how to make you happy.' },
-];
-
-const randomId = Math.floor(Math.random() * 6 + 0)
 
 app.use(express.urlencoded({ extended: false }));
 
@@ -23,16 +14,16 @@ app.use(express.json());
 app.use(cors());
 
 app.get('/testimonials', (req, res) => {
-  res.json(db);
+  res.json(db.testimonials);
 }); 
 
 app.get('/testimonials/random', (req, res) => {
-  res.json(db[Math.floor(Math.random() * db.length + 0)]);
+  res.json(db.testimonials[Math.floor(Math.random() * db.testimonials.length + 0)]);
 }); 
 
 app.get('/testimonials/:id', (req, res) => {
   //res.json(db[req.params.id - 1]);
-  res.json(db.filter(item => item.id == req.params.id));
+  res.json(db.testimonials.filter(item => item.id == req.params.id));
 });
 
 app.post('/testimonials', (req, res) => {
@@ -45,7 +36,7 @@ app.post('/testimonials', (req, res) => {
     text: text
   }
 
-  db.push(newTestimonial);
+  db.testimonials.push(newTestimonial);
   res.json({ message: 'OK' });
 });
 
@@ -58,22 +49,138 @@ app.put('/testimonials/:id', (req, res) => {
     text: text
   }
 
-  const opinion = db.find(item => item.id == req.params.id);
-  const index = db.indexOf(opinion);
+  const item = db.testimonials.find(item => item.id == req.params.id);
+  const index = db.testimonials.indexOf(item);
 
-  db[index] = changedTestimonial;
+  db.testimonials[index] = changedTestimonial;
 
   res.json({ message: 'OK' });
 });
 
 
 app.delete('/testimonials/:id', (req, res) => {
-  const opinion = db.find(item => item.id == req.params.id);
-  const index = db.indexOf(opinion);
-  db.splice(index, 1);
+  const item = db.testimonials.find(item => item.id == req.params.id);
+  const index = db.testimonials.indexOf(item);
+  db.testimonials.splice(index, 1);
 
   res.json({ message: 'OK' });
 });
+
+
+
+app.get('/concerts', (req, res) => {
+  res.json(db.concerts);
+}); 
+
+app.get('/concerts/:id', (req, res) => {
+  res.json(db.concerts.filter(item => item.id == req.params.id));
+});
+
+app.post('/concerts', (req, res) => {
+  const { performer, genre, price, day, image } = req.body;
+  const id = uuidv4();
+
+  const newConcert = {
+    id: id, 
+    performer: performer,
+    genre: genre,
+    price: price,
+    day: day,
+    image: image
+  }
+
+  db.concerts.push(newConcert);
+  res.json({ message: 'OK' });
+});
+
+app.post('/concerts', (req, res) => {
+  const { performer, genre, price, day, image } = req.body;
+
+  const changedConcert = {
+    id: id, 
+    performer: performer,
+    genre: genre,
+    price: price,
+    day: day,
+    image: image
+  }
+
+  const item = db.concerts.find(item => item.id == req.params.id);
+  const index = db.concerts.indexOf(item);
+
+  db.concerts[index] = changedConcert;
+
+  res.json({ message: 'OK' });
+});
+
+
+
+app.delete('/concerts/:id', (req, res) => {
+  const item = db.concerts.find(item => item.id == req.params.id);
+  const index = db.concerts.indexOf(item);
+  db.concerts.splice(index, 1);
+
+  res.json({ message: 'OK' });
+});
+
+
+
+
+app.get('/seats', (req, res) => {
+  res.json(db.seats);
+}); 
+
+app.get('/seats/:id', (req, res) => {
+  res.json(db.seats.filter(item => item.id == req.params.id));
+});
+
+app.post('/seats', (req, res) => {
+  const { id, day, seat, client, email } = req.body;
+  const id = uuidv4();
+
+  const newSeat = {
+    id: id, 
+    day: day,
+    seat: seat,
+    client: client,
+    email: email
+  }
+
+  db.seats.push(newSeat);
+  res.json({ message: 'OK' });
+});
+
+
+app.post('/seats', (req, res) => {
+  const { id, day, seat, client, email } = req.body;
+
+  const changedSeat = {
+    id: id, 
+    day: day,
+    seat: seat,
+    client: client,
+    email: email
+  }
+
+  const item = db.seats.find(item => item.id == req.params.id);
+  const index = db.seats.indexOf(item);
+
+  db.seats[index] = changedSeat;
+
+  res.json({ message: 'OK' });
+});
+
+
+app.delete('/seats/:id', (req, res) => {
+  const item = db.seats.find(item => item.id == req.params.id);
+  const index = db.seats.indexOf(item);
+  db.seats.splice(index, 1);
+
+  res.json({ message: 'OK' });
+});
+
+
+
   
 
 app.use((req, res) => {
