@@ -7,11 +7,10 @@ const db = require('./db');
 const app = express();
 
 
-app.use(express.urlencoded({ extended: false }));
-
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-
 app.use(cors());
+
 
 app.get('/testimonials', (req, res) => {
   res.json(db.testimonials);
@@ -93,7 +92,7 @@ app.post('/concerts', (req, res) => {
   res.json({ message: 'OK' });
 });
 
-app.post('/concerts', (req, res) => {
+app.put('/concerts/:id', (req, res) => {
   const { performer, genre, price, day, image } = req.body;
 
   const changedConcert = {
@@ -123,9 +122,6 @@ app.delete('/concerts/:id', (req, res) => {
   res.json({ message: 'OK' });
 });
 
-
-
-
 app.get('/seats', (req, res) => {
   res.json(db.seats);
 }); 
@@ -135,7 +131,7 @@ app.get('/seats/:id', (req, res) => {
 });
 
 app.post('/seats', (req, res) => {
-  const { id, day, seat, client, email } = req.body;
+  const { day, seat, client, email } = req.body;
   const id = uuidv4();
 
   const newSeat = {
@@ -151,7 +147,7 @@ app.post('/seats', (req, res) => {
 });
 
 
-app.post('/seats', (req, res) => {
+app.put('/seats', (req, res) => {
   const { id, day, seat, client, email } = req.body;
 
   const changedSeat = {
@@ -179,9 +175,7 @@ app.delete('/seats/:id', (req, res) => {
   res.json({ message: 'OK' });
 });
 
-
-
-  
+ 
 
 app.use((req, res) => {
     res.status(404).send('404 not found...');
